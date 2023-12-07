@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useEffect } from "react";
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
@@ -9,44 +10,49 @@ function App() {
   const [endGame, setEndGame] = useState(0)
   const [board, setBoard] = useState(Array(9).fill(null))
   const [turn, setTurn] = useState('O')
+  const [button, setButton] = useState(Array(9).fill(null))
 
   function handleClick(x){
+    console.log(x)
     if(!endGame){
       if(!board[x]){
         const newBoard = board.slice()
         newBoard[x] = turn
+        console.log(board)
         setBoard(newBoard)
+        console.log(board)
         if(checkWinning(newBoard)){
           setEndGame(1)   
         }
         if(turn == 'O'){
           setTurn('X')
+          setBoard(dumbCpu())
+          console.log(board)
           return
         }
         setTurn('O')
-        
-        dumbCpu()
+        setBoard(dumbCpu())
+        console.log(board)
       }
     }
   }
 
   function dumbCpu(){
-    let temp      
+    let temp
     while(true){
       temp = Math.floor(Math.random() * 9)
       if(!board[temp]){
         const newBoard = board.slice()
         newBoard[temp] = turn
-        setBoard(newBoard)
         if(checkWinning(newBoard)){
           setEndGame(1)   
         }
         if(turn == 'O'){
           setTurn('X')
-          return
+          return newBoard
         }
         setTurn('O')
-        break
+        return newBoard
       }
     }
   }
@@ -60,6 +66,7 @@ function App() {
   return (      
     <div className='container'>
       <div className='gameBoard'>
+        {/* <Cpu /> */}
         <Board value={board[0]} onHandleClick={()=>handleClick(0)}/>
         <Board value={board[1]} onHandleClick={()=>handleClick(1)}/>
         <Board value={board[2]} onHandleClick={()=>handleClick(2)}/>
